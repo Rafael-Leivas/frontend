@@ -1,0 +1,36 @@
+.testimonialCard {
+    width: 30%;
+    margin: 1em;
+    padding: 1.5em;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .testimonialCard:hover {
+    transform: scale(1.05);
+  }
+  
+  .testimonialImage {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1em;
+  }
+  
+  .testimonialText {
+    font-style: italic;
+    color: #420B58;
+    font-size: 1.1em;
+  }
+  
+  .testimonialName {
+    font-weight: bold;
+    color: #FC036C;
+    font-size: 1.2em;
+  }
+  

@@ -1,13 +1,14 @@
 import React from 'react'
 import st from './NavBar.module.css'
+import logo from '../../Assets/Logo.svg'
 
 const NavBar = () => {
   return (
     <div className={st.content}>
-        <div>LOGO</div>
+        <img src={logo} alt="Logo Colab" />
         <div className={st.links}>
-            <a href="#">Login</a>
-            <a href="#">Cadastre-se</a>
+            <a className={st.login} href="#">Login</a>
+            <a className={st.cadastro} href="#">Cadastre-se</a>
         </div>
     </div>
   )

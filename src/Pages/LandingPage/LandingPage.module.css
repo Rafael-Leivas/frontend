@@ -1,44 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Madimi+One&display=swap');
+
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.first_block,
+.navbar,
+.cards_product, 
+.team {
+  width: 70%; /* Aplica largura somente para esses blocos */
+  margin: 0 auto; /* Centraliza o conteúdo */
 }
 
 .content{
-    width: 80%;
+    width: 100%;
     margin: 0 auto; 
     height: 100vh;
-    background-color: red;
 }
 
 .first_block {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 20em;
-    background-color: rgb(0, 255, 76);
+    margin-top: 2em;
 }
 
 .texts {
     width: 50%;
+    margin: 2em 0;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.texts h1 {
+    font-size: 3em;
+    width: 75%;
+    color: #420B58;
+    font-family: "Madimi One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+
+}
+
+.button_contrate_block_1 {
+    display: flex;
     justify-content: center;
-}	
+    align-items: center;
+    width: 12em;
+    padding: 1em;
+    background-color: #FC036C;
+    color: #fff;
+    font-family: "Madimi One", sans-serif;
+    border: none;
+    margin-top: 1em;
+}
+
+.image_block1 {
+    display: flex;
+    width: 50%;
+    justify-content: end;
+    align-items: center;
+    padding: 0 3em;
+}
 
 .image_first_block {
+    max-width: 100%;
+    height: auto;
+}
+
+.second_block{
+    margin-top: 7em;
+}
+
+.second_block img{
+    width: 100%;
+    position: relative;
+} 
+
+.cards_product {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 7em;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.title_cards {
+    font-size: 2.5em;
+    color: #420B58;
+    font-family: "Madimi One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    margin-bottom: em;
+    align-items: center;
+}
+
+.cards_cards_product {
+    margin-top: 5em;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; 
+}
+
+.card{
+    width: calc(33.33% - 3em);
+    margin-bottom: 6em;
+}
+
+.card:hover{
+    transform: scale(1.02);
+    transition: 0.15s;
+}
+
+.team {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5em;
+    align-items: center;
+}
+
+.texts_teams {
     width: 50%;
+    margin: 2em 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    gap: 1em;
+}
+
+.texts_teams h1 {
+    font-size: 3em;
+    width: 75%;
+    color: #D27B00;
+    font-family: "Madimi One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.texts_teams p {
+    font-size: 1.5em;
+    color: #420B58;
+    font-family: "Arima", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.button_team {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: brown;
-    height: 100%;   
+    width: 12em;
+    padding: 1em;
+    background-color: #FCA503;
+    color: #fff;
+    font-family: "Madimi One", sans-serif;
+    border: none;
+    margin-top: 1em;
 }
 
-.second_block {
+.button_team:hover, .button_contrate_block_1:hover{
+    transform: scale(1.05);
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.testimonials {
+    width: 70%;
+    margin: 5em auto;
+    text-align: center;
+  }
+  
+  .testimonialsTitle {
+    font-size: 2.5em;
+    color: #420B58;
+    font-family: "Madimi One", sans-serif;
+    font-weight: 400;
+    margin-bottom: 2em;
+  }
+  
+  .testimonialCards {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    height: 8em;
-    background-color: rgb(200, 0, 255);
-}
+    flex-wrap: wrap;
+  }
+  
+  .testimonialCard {
+    width: 30%;
+    margin: 1em;
+    padding: 1.5em;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .testimonialCard:hover {
+    transform: scale(1.05);
+  }
+  
+  .testimonialImage {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1em;
+  }
+  
+  .testimonialText {
+    font-style: italic;
+    color: #420B58;
+    font-size: 1.1em;
+  }
+  
+  .testimonialName {
+    font-weight: bold;
+    color: #FC036C;
+    font-size: 1.2em;
+  }
+  
+  .footer {
+    background-color: #FC036C;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  .footerContent {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .socialMedia {
+    margin-top: 10px;
+  }
+  
+  .socialMedia a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+  }
+  
+  .socialMedia a:hover {
+    text-decoration: underline;
+  }
+  
