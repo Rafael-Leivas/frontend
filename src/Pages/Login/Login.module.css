@@ -1,53 +1,158 @@
+/* Container Principal */
 .loginContainer {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-  }
-  
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .form {
-    display: flex;
+  display: flex;
+  min-height: 100vh;
+  font-family: "Arial", sans-serif;
+}
+
+/* Lado Esquerdo: Formulário */
+.leftSide {
+  flex: 1;
+  background-color: #fff; /* Fundo branco */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Formulário */
+.form {
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+/* Título do Formulário */
+h2 {
+  text-align: center;
+  color: #420b58;
+  margin-bottom: 20px;
+}
+
+/* Grupos de Campos */
+.formGroup {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.formGroup input {
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.formGroup input:focus {
+  border: 1px solid #fc036c;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+/* Mensagem de Erro */
+.error {
+  font-size: 0.8rem;
+  color: #ff4d4d;
+  margin-top: 5px;
+}
+
+/* Botão de Submissão */
+.submitButton {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #fc036c;
+  border: none;
+  border-radius: 8px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submitButton:hover {
+  background-color: #d40059;
+  transform: scale(1.02);
+}
+
+/* Navegação para o registro */
+.loginnavigate {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.loginnavigate a {
+  color: #fc036c;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.loginnavigate a:hover {
+  text-decoration: underline;
+}
+
+/* Lado Direito: Imagem */
+.rightSide {
+  flex: 1;
+  background-color: #420B58; /* Fundo rosa */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.rightSide h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+/* Imagem */
+.image_peoples {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .loginContainer {
     flex-direction: column;
   }
-  
-  .formGroup {
-    margin-bottom: 15px;
+
+  .leftSide,
+  .rightSide {
+    flex: unset;
+    padding: 20px;
   }
-  
-  label {
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  input {
+
+  .form {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 20px;
   }
-  
-  .error {
-    color: red;
-    font-size: 12px;
+
+  h2 {
+    font-size: 1.5rem;
   }
-  
+
+  .formGroup input {
+    font-size: 0.95rem;
+  }
+
   .submitButton {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    font-size: 0.95rem;
   }
-  
-  .submitButton:hover {
-    background-color: #0056b3;
-  }
-  
+}
