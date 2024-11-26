@@ -1,100 +1,145 @@
-/* Container Principal */
 .registerContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f9f9f9;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  /* Formulário */
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Lado Esquerdo */
+.leftSide {
+  flex: 1;
+  background-color: #FC036C; /* Azul claro */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  padding: 20px;
+}
+
+.leftSide h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.image_peoples {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+}
+
+/* Lado Direito */
+.rightSide {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+/* Formulário */
+.form {
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+/* Título do Formulário */
+h2 {
+  text-align: center;
+  color: #420B58;
+  margin-bottom: 20px;
+}
+
+/* Grupos de Campos */
+.formGroup {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.formGroup input {
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efeito ao Focar no Campo */
+.formGroup input:focus {
+  border: 1px solid #FC036C;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+/* Mensagem de Erro */
+.error {
+  font-size: 0.8rem;
+  color: #ff4d4d;
+  margin-top: 5px;
+}
+
+/* Botão de Submissão */
+.submitButton {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #D27B00;
+  border: none;
+  border-radius: 8px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submitButton:hover {
+  background-color: #b36800;
+  transform: scale(1.02);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
   .form {
-    width: 100%;
-    max-width: 400px;
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
   }
-  
-  /* Título do Formulário */
+
   h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+    font-size: 1.5rem;
   }
-  
-  /* Grupos de Campos */
-  .formGroup {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .formGroup label {
-    font-size: 0.9rem;
-    color: #555;
-    margin-bottom: 8px;
-  }
-  
+
   .formGroup input {
-    padding: 12px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    outline: none;
-    transition: border 0.3s ease, box-shadow 0.3s ease;
+    font-size: 0.95rem;
   }
-  
-  /* Efeito ao Focar no Campo */
-  .formGroup input:focus {
-    border: 1px solid #007bff;
-    box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
-  }
-  
-  /* Mensagem de Erro */
-  .error {
-    font-size: 0.8rem;
-    color: #ff4d4d;
-    margin-top: 5px;
-  }
-  
-  /* Botão de Submissão */
+
   .submitButton {
-    width: 100%;
-    padding: 12px;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 0.95rem;
   }
-  
-  .submitButton:hover {
-    background-color: #0056b3;
-    transform: scale(1.02);
-  }
-  
-  /* Responsividade */
-  @media (max-width: 768px) {
-    .form {
-      padding: 20px;
-    }
-  
-    h2 {
-      font-size: 1.5rem;
-    }
-  
-    .formGroup input {
-      font-size: 0.95rem;
-    }
-  
-    .submitButton {
-      font-size: 0.95rem;
-    }
-  }
-  
+}
+
+
+/* Estilo para a navegação do login */
+.loginnavigate {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.loginnavigate a {
+  color: #FC036C;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.loginnavigate a:hover {
+  text-decoration: underline;
+}
