@@ -10,11 +10,12 @@ const Users = () => {
   const [newColaborador, setNewColaborador] = useState({
     nome_completo: '',
     email: '',
-    setor: '',
+    setor: '', // Vai receber a seleção ou o valor digitado
     data_nascimento: '',
     senha: '',
     id_administrador: 1, // Exemplo: ID do administrador atual (ajuste conforme necessário)
   });
+  const [novoSetor, setNovoSetor] = useState(''); // Estado para o novo setor digitado
 
   // Estado para setores dinâmicos
   const [availableSetores, setAvailableSetores] = useState([]);
@@ -54,6 +55,7 @@ const Users = () => {
       senha: '',
       id_administrador: 1,
     });
+    setNovoSetor(''); // Limpar o campo de novo setor ao fechar o modal
   };
 
   const handleChange = (e) => {
@@ -61,16 +63,36 @@ const Users = () => {
     setNewColaborador({ ...newColaborador, [name]: value });
   };
 
+  const handleNovoSetorChange = (e) => {
+    setNovoSetor(e.target.value); // Atualizar o texto do novo setor
+  };
+
   const handleAddColaborador = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://127.0.0.1:8000/colaborador', newColaborador);
+      // Se o setor for "outro", substitui com o texto digitado
+      const colaboradorData = {
+        ...newColaborador,
+        setor: newColaborador.setor === 'outro' ? novoSetor : newColaborador.setor,
+      };
+      const response = await axios.post('http://127.0.0.1:8000/colaborador', colaboradorData);
       setColaboradoresData((prevData) => [...prevData, response.data]);
       alert('Colaborador adicionado com sucesso!');
       handleCloseModal();
     } catch (error) {
       console.error('Erro ao adicionar colaborador:', error);
       alert('Erro ao adicionar colaborador. Verifique os dados e tente novamente.');
+    }
+  };
+
+  const handleSetorChange = (e) => {
+    const { value } = e.target;
+    if (value === 'outro') {
+      // Quando o setor for "outro", mostra o campo de texto
+      setNewColaborador({ ...newColaborador, setor: value });
+    } else {
+      // Caso contrário, seleciona o setor normalmente
+      setNewColaborador({ ...newColaborador, setor: value });
     }
   };
 
@@ -116,14 +138,21 @@ const Users = () => {
               </div>
             ))}
           </div>
+          
           <div className="colaboradores-list">
             <h3>Todos os colaboradores</h3>
+            <div className='subtitle-all-colaborators'>
+              <span className="nome">Nome</span>
+              <span className="setor">Setor</span>
+            </div>
             {colaboradoresData.map((colaborador) => (
               <div key={colaborador.id_colaborador} className="colaborador-card">
-                {colaborador.nome_completo}
+                <span className="nome">{colaborador.nome_completo}</span>
+                <span className="setor">{colaborador.setor}</span>
               </div>
             ))}
           </div>
+
         </div>
       </main>
 
@@ -158,7 +187,7 @@ const Users = () => {
                 <select
                   name="setor"
                   value={newColaborador.setor}
-                  onChange={handleChange}
+                  onChange={handleSetorChange}
                   required
                 >
                   <option value="">Selecione um setor</option>
@@ -174,9 +203,8 @@ const Users = () => {
                 <input
                   type="text"
                   placeholder="Digite o novo setor"
-                  name="setor"
-                  value={newColaborador.setor}
-                  onChange={handleChange}
+                  value={novoSetor}
+                  onChange={handleNovoSetorChange}
                   required
                 />
               )}
