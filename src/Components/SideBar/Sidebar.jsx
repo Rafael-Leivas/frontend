@@ -7,8 +7,7 @@ import logo from '../../Assets/Logo-Sidebar.svg';
 const Sidebar = (props) => {
   const menuItems = [
     { name: 'Onboarding', icon: <FaHome />, page: 'onboarding' },
-    { name: 'Forums', icon: <FaComments />, page: 'forums' },
-    { name: 'Configurações', icon: <FaCog />, page: 'settings' },
+    { name: 'Usuários', icon: <FaComments />, page: 'users' },
     { name: 'Sair', icon: <FaSignOutAlt />, page: 'logout' },
   ];
 
