@@ -1,0 +1,104 @@
+.welcome-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #6a1b9a, #4a0077);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    width: 300px;
+    position: relative;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.welcome-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-card.blocked {
+    opacity: 0.6;
+    pointer-events: none; /* Impede interações com o card bloqueado */
+}
+
+.circle {
+    width: 50px;
+    height: 50px;
+    background-color: #ffb300;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+    text-align: center;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.content h2 {
+    margin: 0;
+    color: #ffeb3b;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.content p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #e0e0e0;
+}
+
+.cta-container {
+    margin-top: 10px;
+}
+
+.cta-button {
+    background-color: #ffb300;
+    color: #4a0077;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.cta-button:hover {
+    background-color: #ffd54f;
+    color: #4a0077;
+}
+
+/* Estilo para o botão bloqueado */
+.cta-button.disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    border-radius: 15px;
+}
