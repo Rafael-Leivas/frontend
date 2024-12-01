@@ -157,4 +157,125 @@
     width: 100%;
   }
   
-  
+/* Estilos do modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal h2 {
+  color: #333;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Modificação no estilo dos labels e inputs */
+.modal label {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal input, .modal select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  transition: border-color 0.3s;
+}
+
+.modal input:focus, .modal select:focus {
+  border-color: #ffb300;
+  outline: none;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.modal-buttons button {
+  padding: 12px 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+}
+
+.modal-buttons button:first-child {
+  background-color: #ffb300;
+  color: #4a0077;
+  width: 100%;
+}
+
+.modal-buttons button:last-child {
+  background-color: #d32f2f;
+  color: white;
+  width: 100%;
+}
+
+.modal-buttons button:first-child:hover {
+  background-color: #ffd54f;
+}
+
+.modal-buttons button:last-child:hover {
+  background-color: #e57373;
+}
+
+/* Melhorias para o layout */
+input[type="date"] {
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+select {
+  font-size: 1rem;
+  padding: 12px;
+}
+
+button {
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+button:focus {
+  outline: none;
+}

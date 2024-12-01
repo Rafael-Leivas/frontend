@@ -1,77 +1,100 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../../Components/SideBar/Sidebar';
 import './Users.css';
+import axios from 'axios';
 
 const Users = () => {
+  const [colaboradoresData, setColaboradoresData] = useState([]);
   const [selectedSetor, setSelectedSetor] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newColaborador, setNewColaborador] = useState({
+    nome_completo: '',
+    email: '',
+    setor: '',
+    data_nascimento: '',
+    senha: '',
+    id_administrador: 1, // Exemplo: ID do administrador atual (ajuste conforme necessário)
+  });
 
-  // Dados mocados do JSON fornecido
-  const colaboradoresData = [
-    {
-      id_administrador: 1,
-      nome_completo: 'Rafa',
-      email: 'ainda',
-      data_nascimento: '2024-12-01T00:46:38.284000',
-      senha: 'string',
-      setor: 'Tecnologia',
-    },
-    {
-      id_administrador: 2,
-      nome_completo: 'Rafa',
-      email: 'das',
-      data_nascimento: '2024-12-01T00:46:38.284000',
-      senha: 'string',
-      setor: 'Administração',
-    },
-    {
-      id_administrador: 3,
-      nome_completo: 'Carlos',
-      email: 'email3@example.com',
-      data_nascimento: '2024-12-01T00:46:38.284000',
-      senha: 'string',
-      setor: 'Suporte',
-    },
-    {
-        id_administrador: 4,
-        nome_completo: 'Ainda',
-        email: 'ainda',
-        data_nascimento: '2024-12-01T00:46:38.284000',
-        senha: 'string',
-        setor: 'Tecnologia',
-      },
-  ];
+  // Estado para setores dinâmicos
+  const [availableSetores, setAvailableSetores] = useState([]);
 
-  // Organizar usuários por setor
-  const setores = colaboradoresData.reduce((acc, colaborador) => {
-    const { setor } = colaborador;
-    if (!acc[setor]) {
-      acc[setor] = [];
-    }
-    acc[setor].push(colaborador);
-    return acc;
-  }, {});
+  useEffect(() => {
+    const fetchColaboradores = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/colaborador/all');
+        setColaboradoresData(response.data);
+
+        // Extrair setores únicos do JSON recebido
+        const setores = [...new Set(response.data.map((colaborador) => colaborador.setor))];
+        setAvailableSetores(setores);
+      } catch (error) {
+        console.error('Erro ao buscar colaboradores:', error);
+      }
+    };
+
+    fetchColaboradores();
+  }, []);
 
   const handleSetorClick = (setor) => {
     setSelectedSetor(selectedSetor === setor ? null : setor);
   };
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setNewColaborador({
+      nome_completo: '',
+      email: '',
+      setor: '',
+      data_nascimento: '',
+      senha: '',
+      id_administrador: 1,
+    });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewColaborador({ ...newColaborador, [name]: value });
+  };
+
+  const handleAddColaborador = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/colaborador', newColaborador);
+      setColaboradoresData((prevData) => [...prevData, response.data]);
+      alert('Colaborador adicionado com sucesso!');
+      handleCloseModal();
+    } catch (error) {
+      console.error('Erro ao adicionar colaborador:', error);
+      alert('Erro ao adicionar colaborador. Verifique os dados e tente novamente.');
+    }
+  };
+
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
-      <Sidebar
-        currentPage="users"
-        name="Nome do Usuário"
-      />
+      <Sidebar currentPage="users" name="Nome do Usuário" />
       <main className="colaboradores-main">
         <h1>Colaboradores</h1>
         <div className="button-container">
-          <button className="btn-add">+ Adicionar administrador</button>
-          <button className="btn-add">+ Adicionar colaborador</button>
+          <button className="btn-add" onClick={handleOpenModal}>
+            + Adicionar colaborador
+          </button>
         </div>
         <div className="content-section">
-          {/* Container de setores */}
           <div className="setores-container">
             <h2 className="setores-title">Setores</h2>
-            {Object.keys(setores).map((setor) => (
+            {Object.keys(
+              colaboradoresData.reduce((acc, colaborador) => {
+                const { setor } = colaborador;
+                if (!acc[setor]) acc[setor] = [];
+                acc[setor].push(colaborador);
+                return acc;
+              }, {})
+            ).map((setor) => (
               <div key={setor} className="setor">
                 <button
                   className="setor-btn"
@@ -81,30 +104,114 @@ const Users = () => {
                 </button>
                 {selectedSetor === setor && (
                   <div className="setor-users">
-                    {setores[setor].map((user) => (
-                      <div key={user.id_administrador} className="setor-user-card">
-                        {user.nome_completo}
-                      </div>
-                    ))}
+                    {colaboradoresData
+                      .filter((colaborador) => colaborador.setor === setor)
+                      .map((user) => (
+                        <div key={user.id_colaborador} className="setor-user-card">
+                          {user.nome_completo}
+                        </div>
+                      ))}
                   </div>
                 )}
               </div>
             ))}
           </div>
-          {/* Lista de todos os colaboradores */}
           <div className="colaboradores-list">
             <h3>Todos os colaboradores</h3>
             {colaboradoresData.map((colaborador) => (
-              <div
-                key={colaborador.id_administrador}
-                className="colaborador-card"
-              >
+              <div key={colaborador.id_colaborador} className="colaborador-card">
                 {colaborador.nome_completo}
               </div>
             ))}
           </div>
         </div>
       </main>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Adicionar Colaborador</h2>
+            <form onSubmit={handleAddColaborador}>
+              <label>
+                Nome Completo:
+                <input
+                  type="text"
+                  name="nome_completo"
+                  value={newColaborador.nome_completo}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <label>
+                Email:
+                <input
+                  type="email"
+                  name="email"
+                  value={newColaborador.email}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <label>
+                Setor:
+                <select
+                  name="setor"
+                  value={newColaborador.setor}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Selecione um setor</option>
+                  {availableSetores.map((setor) => (
+                    <option key={setor} value={setor}>
+                      {setor}
+                    </option>
+                  ))}
+                  <option value="outro">Outro (escrever manualmente)</option>
+                </select>
+              </label>
+              {newColaborador.setor === 'outro' && (
+                <input
+                  type="text"
+                  placeholder="Digite o novo setor"
+                  name="setor"
+                  value={newColaborador.setor}
+                  onChange={handleChange}
+                  required
+                />
+              )}
+              <label>
+                Data de Nascimento:
+                <input
+                  type="date"
+                  name="data_nascimento"
+                  value={newColaborador.data_nascimento}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <label>
+                Senha:
+                <input
+                  type="password"
+                  name="senha"
+                  value={newColaborador.senha}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <div className="modal-buttons">
+                <button type="submit" className="btn-add">
+                  Salvar
+                </button>
+                <button type="button" className="btn-cancel" onClick={handleCloseModal}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
