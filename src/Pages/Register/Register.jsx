@@ -1,5 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import st from "./Register.module.css";
@@ -20,6 +22,8 @@ const schema = yup.object({
 });
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -32,6 +36,7 @@ const Register = () => {
     console.log(data);
     // Enviar os dados para o backend
     // fetch('/api/register', { method: 'POST', body: JSON.stringify(data) })
+    navigate("/login");
   };
 
   return (
@@ -82,10 +87,10 @@ const Register = () => {
             )}
           </div>
 
-          <p className={st.loginnavigate}>Já tem conta? <a href="#">Acesse aqui</a></p>
+          <p className={st.loginnavigate}>Já tem conta? <a href="/login">Acesse aqui</a></p>
 
           <button type="submit" className={st.submitButton}>
-            Continuar
+            Continuar 
           </button>
         </form>
       </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -15,6 +16,8 @@ const schema = yup.object({
 });
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -26,6 +29,8 @@ const Login = () => {
   const onSubmit = (data) => {
     console.log(data);
     // Enviar os dados para o backend
+    
+    navigate("/onboarding");
   };
 
   return (
