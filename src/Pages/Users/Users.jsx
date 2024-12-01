@@ -60,7 +60,6 @@ const Users = () => {
       <Sidebar
         currentPage="users"
         name="Nome do Usuário"
-        username="@Example"
       />
       <main className="colaboradores-main">
         <h1>Colaboradores</h1>

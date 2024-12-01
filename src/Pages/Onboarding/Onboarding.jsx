@@ -17,7 +17,7 @@ const Onboarding = () => {
         { number: "3", title: "Políticas da Empresa", subtitle: "Conheça as principais políticas internas", liberado: false },
         { number: "4", title: "Seu Time", subtitle: "Veja quem são seus colegas e líderes", liberado: false },
       ]);
-    }, 1000); // Simula um delay de 1 segundo
+    }); // Simula um delay de 1 segundo
   }, []);
 
   // Função para abrir o modal
@@ -49,7 +49,6 @@ const Onboarding = () => {
       <Sidebar 
         currentPage="onboarding"
         name="Nome do Usuário"
-        username="Teste"
       />
       <main className={st.main}>
         <h1>Onboarding</h1>
