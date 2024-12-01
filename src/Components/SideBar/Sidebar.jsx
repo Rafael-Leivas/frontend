@@ -1,14 +1,15 @@
 import React from 'react';
-import { FaHome, FaComments, FaCog, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaComments, FaSignOutAlt } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import './Sidebar.css'; // Estilos para o componente
 
 import logo from '../../Assets/Logo-Sidebar.svg';
 
 const Sidebar = (props) => {
   const menuItems = [
-    { name: 'Onboarding', icon: <FaHome />, page: 'onboarding' },
-    { name: 'Usuários', icon: <FaComments />, page: 'users' },
-    { name: 'Sair', icon: <FaSignOutAlt />, page: 'logout' },
+    { name: 'Onboarding', icon: <FaHome />, page: 'onboarding', path: '/onboarding' },
+    { name: 'Usuários', icon: <FaComments />, page: 'users', path: '/users' },
+    { name: 'Sair', icon: <FaSignOutAlt />, page: 'logout', path: '/' },
   ];
 
   return (
@@ -20,7 +21,6 @@ const Sidebar = (props) => {
         <div className="avatar" />
         <div className="user-details">
           <h2>{props.name}</h2>
-          <p>{props.username}</p>
         </div>
       </div>
       <ul className="menu">
@@ -29,8 +29,12 @@ const Sidebar = (props) => {
             key={item.name}
             className={props.currentPage === item.page ? 'active' : ''}
           >
-            {item.icon}
-            <span>{item.name}</span>
+            <Link to={item.path} className="menu-link">
+              <div className="menu-item">
+                {item.icon}
+                <span>{item.name}</span>
+              </div>
+            </Link>
           </li>
         ))}
       </ul>
