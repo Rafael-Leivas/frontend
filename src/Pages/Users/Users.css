@@ -1,0 +1,160 @@
+.colaboradores-main {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+  }
+  
+  .button-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .btn-add {
+    background-color: #ffb300;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-add:hover {
+    background-color: #ffd54f;
+  }
+  
+  .content-section {
+    display: flex;
+    justify-content: space-between; /* Ajusta para fixar na direita */
+    width: 90%;
+    height: 100%; /* Ocupa toda a altura */
+  }
+  
+ /* Contêiner principal dos setores */
+.setores-container {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 15px;
+    width: 60%; /* Ajuste conforme necessário */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Título dos setores */
+  .setores-title {
+    font-size: 1.5rem;
+    color: #ffb300;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  /* Botões dos setores */
+  .setor-btn {
+    background-color: #4a0077; /* Cor roxa */
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* Ícone ou animação ao lado do texto do botão */
+  .setor-btn::after {
+    content: "⯆"; /* Alternar com ⯅ quando clicado */
+    font-size: 1.2rem;
+    transition: transform 0.2s ease;
+  }
+  
+  /* Hover para botão */
+  .setor-btn:hover {
+    background-color: #5f009b;
+    transform: scale(1.02);
+  }
+  
+  /* Estado ativo (setor aberto) */
+  .setor-btn.active::after {
+    transform: rotate(180deg);
+  }
+  
+  /* Lista de usuários do setor */
+  .setor-users {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #e8eaf6; /* Cor clara para contraste */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  /* Cartão do usuário dentro do setor */
+  .setor-user-card {
+    background-color: white;
+    color: #4a0077;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    width: calc(50% - 10px); /* Duas colunas */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  /* Hover no cartão de usuário */
+  .setor-user-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Adaptação responsiva */
+  @media (max-width: 768px) {
+    .setor-user-card {
+      width: 100%; /* Ajusta para uma coluna em telas menores */
+    }
+  }
+  
+  .colaboradores-list {
+    background-color: #4a0077;
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    width: 30%;
+    height: 90%; /* Altura total da tela menos a margem superior */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto; /* Adiciona rolagem se necessário */
+  }
+  
+  .colaboradores-list h3 {
+    margin-bottom: 15px;
+  }
+  
+  .colaborador-card {
+    background-color: #d3d3d3;
+    color: #4a0077;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    width: 100%;
+  }
+  
+  
