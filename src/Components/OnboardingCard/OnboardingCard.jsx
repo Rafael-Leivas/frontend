@@ -1,7 +1,7 @@
 import React from 'react';
 import './OnboardingCard.css';
 
-const OnboardingCard = ({ number, title, subtitle, liberado }) => {
+const OnboardingCard = ({ number, title, subtitle, liberado, onViewMore }) => {
   return (
     <div className={`welcome-card ${!liberado ? 'blocked' : ''}`}>
       <div className="circle">{number}</div>
@@ -11,7 +11,7 @@ const OnboardingCard = ({ number, title, subtitle, liberado }) => {
       </div>
       <div className="cta-container">
         {liberado ? (
-          <button className="cta-button">
+          <button className="cta-button" onClick={onViewMore}>
             Veja tudo! <span>&#9660;</span>
           </button>
         ) : (

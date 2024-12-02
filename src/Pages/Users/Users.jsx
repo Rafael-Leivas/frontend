@@ -77,7 +77,6 @@ const Users = () => {
       };
       const response = await axios.post('http://127.0.0.1:8000/colaborador', colaboradorData);
       setColaboradoresData((prevData) => [...prevData, response.data]);
-      alert('Colaborador adicionado com sucesso!');
       handleCloseModal();
     } catch (error) {
       console.error('Erro ao adicionar colaborador:', error);
