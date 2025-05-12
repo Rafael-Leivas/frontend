@@ -1,41 +1,77 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../Components/SideBar/Sidebar';
 import './Users.css';
-import axios from 'axios';
+import { 
+  getAllColaboradores, 
+  createColaborador 
+} from '../../api/services/colaboradorService';
+import { isAuthenticated, getUserRole } from '../../api/auth';
 
 const Users = () => {
+  const navigate = useNavigate();
   const [colaboradoresData, setColaboradoresData] = useState([]);
   const [selectedSetor, setSelectedSetor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newColaborador, setNewColaborador] = useState({
     nome_completo: '',
     email: '',
-    setor: '', // Vai receber a seleção ou o valor digitado
+    setor: '',
     data_nascimento: '',
     senha: '',
-    id_administrador: 1, // Exemplo: ID do administrador atual (ajuste conforme necessário)
+    id_administrador: '' // Será preenchido com o ID do admin logado
   });
-  const [novoSetor, setNovoSetor] = useState(''); // Estado para o novo setor digitado
-
-  // Estado para setores dinâmicos
+  const [novoSetor, setNovoSetor] = useState('');
   const [availableSetores, setAvailableSetores] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [currentUserRole, setCurrentUserRole] = useState(null);
 
   useEffect(() => {
-    const fetchColaboradores = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/colaborador/all');
-        setColaboradoresData(response.data);
+    // Verifica autenticação e permissões
+    if (!isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
 
-        // Extrair setores únicos do JSON recebido
-        const setores = [...new Set(response.data.map((colaborador) => colaborador.setor))];
+    const role = getUserRole();
+    setCurrentUserRole(role);
+
+    // Apenas administradores podem acessar esta página
+    // if (role !== 'admin') {
+    //   navigate('/unauthorized');
+    //   return;
+    // }
+
+    // Obtém o ID do administrador do token (você precisará implementar isso)
+    const adminId = getAdminIdFromToken(); // Função fictícia - implemente conforme seu sistema
+    setNewColaborador(prev => ({ ...prev, id_administrador: adminId }));
+
+    const fetchColaboradores = async () => {
+      setLoading(true);
+      try {
+        const response = await getAllColaboradores();
+        setColaboradoresData(response.data || []);
+        
+        // Extrair setores únicos
+        const setores = [...new Set(response.data.map(colab => colab.setor))];
         setAvailableSetores(setores);
-      } catch (error) {
-        console.error('Erro ao buscar colaboradores:', error);
+      } catch (err) {
+        setError(err.message);
+        console.error('Erro ao buscar colaboradores:', err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchColaboradores();
-  }, []);
+  }, [navigate]);
+
+  // Função fictícia - você precisará implementar de acordo com seu sistema
+  const getAdminIdFromToken = () => {
+    // Implemente a lógica para extrair o ID do admin do token JWT
+    return 'ID_DO_ADMIN_LOGADO'; // Substitua por sua implementação real
+  };
 
   const handleSetorClick = (setor) => {
     setSelectedSetor(selectedSetor === setor ? null : setor);
@@ -47,64 +83,74 @@ const Users = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setNewColaborador({
+    setNewColaborador(prev => ({
+      ...prev,
       nome_completo: '',
       email: '',
       setor: '',
       data_nascimento: '',
-      senha: '',
-      id_administrador: 1,
-    });
-    setNovoSetor(''); // Limpar o campo de novo setor ao fechar o modal
+      senha: ''
+    }));
+    setNovoSetor('');
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewColaborador({ ...newColaborador, [name]: value });
+    setNewColaborador(prev => ({ ...prev, [name]: value }));
   };
 
   const handleNovoSetorChange = (e) => {
-    setNovoSetor(e.target.value); // Atualizar o texto do novo setor
+    setNovoSetor(e.target.value);
   };
 
   const handleAddColaborador = async (e) => {
     e.preventDefault();
     try {
-      // Se o setor for "outro", substitui com o texto digitado
       const colaboradorData = {
         ...newColaborador,
         setor: newColaborador.setor === 'outro' ? novoSetor : newColaborador.setor,
       };
-      const response = await axios.post('http://127.0.0.1:8000/colaborador', colaboradorData);
-      setColaboradoresData((prevData) => [...prevData, response.data]);
+      
+      const response = await createColaborador(colaboradorData);
+      
+      // Atualiza a lista de colaboradores e setores
+      setColaboradoresData(prev => [...prev, response.data]);
+      
+      // Se for um novo setor, adiciona à lista
+      if (newColaborador.setor === 'outro' && !availableSetores.includes(novoSetor)) {
+        setAvailableSetores(prev => [...prev, novoSetor]);
+      }
+      
       handleCloseModal();
     } catch (error) {
       console.error('Erro ao adicionar colaborador:', error);
-      alert('Erro ao adicionar colaborador. Verifique os dados e tente novamente.');
+      alert(error.response?.data?.message || 'Erro ao adicionar colaborador');
     }
   };
 
   const handleSetorChange = (e) => {
     const { value } = e.target;
-    if (value === 'outro') {
-      // Quando o setor for "outro", mostra o campo de texto
-      setNewColaborador({ ...newColaborador, setor: value });
-    } else {
-      // Caso contrário, seleciona o setor normalmente
-      setNewColaborador({ ...newColaborador, setor: value });
-    }
+    setNewColaborador(prev => ({ ...prev, setor: value }));
   };
+
+  if (!currentUserRole) return <div>Verificando permissões...</div>;
+  if (loading) return <div>Carregando...</div>;
+  if (error) return <div>Erro: {error}</div>;
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <Sidebar currentPage="users" name="Nome do Usuário" />
       <main className="colaboradores-main">
         <h1>Colaboradores</h1>
-        <div className="button-container">
-          <button className="btn-add" onClick={handleOpenModal}>
-            + Adicionar colaborador
-          </button>
-        </div>
+        
+        {currentUserRole === 'admin' && (
+          <div className="button-container">
+            <button className="btn-add" onClick={handleOpenModal}>
+              + Adicionar colaborador
+            </button>
+          </div>
+        )}
+
         <div className="content-section">
           <div className="setores-container">
             <h2 className="setores-title">Setores</h2>
@@ -128,8 +174,11 @@ const Users = () => {
                     {colaboradoresData
                       .filter((colaborador) => colaborador.setor === setor)
                       .map((user) => (
-                        <div key={user.id_colaborador} className="setor-user-card">
+                        <div key={user._id} className="setor-user-card">
                           {user.nome_completo}
+                          {currentUserRole === 'admin' && (
+                            <span className="user-email">{user.email}</span>
+                          )}
                         </div>
                       ))}
                   </div>
@@ -143,20 +192,25 @@ const Users = () => {
             <div className='subtitle-all-colaborators'>
               <span className="nome">Nome</span>
               <span className="setor">Setor</span>
+              {currentUserRole === 'admin' && (
+                <span className="email">Email</span>
+              )}
             </div>
             {colaboradoresData.map((colaborador) => (
-              <div key={colaborador.id_colaborador} className="colaborador-card">
+              <div key={colaborador._id} className="colaborador-card">
                 <span className="nome">{colaborador.nome_completo}</span>
                 <span className="setor">{colaborador.setor}</span>
+                {currentUserRole === 'admin' && (
+                  <span className="email">{colaborador.email}</span>
+                )}
               </div>
             ))}
           </div>
-
         </div>
       </main>
 
-      {/* Modal */}
-      {isModalOpen && (
+      {/* Modal de Adição - Visível apenas para admins */}
+      {isModalOpen && currentUserRole === 'admin' && (
         <div className="modal-overlay">
           <div className="modal">
             <h2>Adicionar Colaborador</h2>

@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import axios from "../../api/axiosConfig";
+import { setToken, setUserRole } from "../../api/auth";
 import st from "./Register.module.css";
-
-import image from '../../Assets/peoplesregister.svg'
+import image from "../../Assets/peoplesregister.svg";
 
 const schema = yup.object({
   name: yup.string().required("Nome é obrigatório"),
   email: yup.string().email("E-mail inválido").required("E-mail é obrigatório"),
+  cnpj: yup.string().required("CNPJ é obrigatório"), // Novo campo
   password: yup
     .string()
     .min(6, "A senha deve ter pelo menos 6 caracteres")
@@ -23,6 +24,8 @@ const schema = yup.object({
 
 const Register = () => {
   const navigate = useNavigate();
+  const [registerError, setRegisterError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -32,25 +35,47 @@ const Register = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // Enviar os dados para o backend
-    // fetch('/api/register', { method: 'POST', body: JSON.stringify(data) })
-    navigate("/login");
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    setRegisterError(null);
+
+    try {
+      // Alterado para o novo endpoint de registro de empresa
+      const response = await axios.post("/empresa/register", {
+        nome: data.name,
+        email: data.email,
+        senha: data.password,
+        cnpj: data.cnpj,
+      });
+
+      // Armazena token e role
+      setToken(response.data.data.token);
+      setUserRole("empresa");
+
+      // Redireciona para a dashboard
+      navigate("/onboarding");
+    } catch (error) {
+      setRegisterError(
+        error.response?.data?.message || "Erro ao registrar empresa"
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className={st.registerContainer}>
-      {/* Lado esquerdo */}
       <div className={st.leftSide}>
         <h1>Bem vindo !!</h1>
-        <img className="image_peoples" src={image} alt="Ilustração" />
+        <img className={st.image_peoples} src={image} alt="Ilustração" />
       </div>
 
-      {/* Lado direito */}
       <div className={st.rightSide}>
         <form onSubmit={handleSubmit(onSubmit)} className={st.form}>
           <h2>Cadastre-se</h2>
+
+          {registerError && <p className={st.error}>{registerError}</p>}
+
           <div className={st.formGroup}>
             <label>Nome</label>
             <input {...register("name")} placeholder="Seu nome" />
@@ -61,6 +86,12 @@ const Register = () => {
             <label>E-mail</label>
             <input {...register("email")} placeholder="Seu e-mail" />
             {errors.email && <p className={st.error}>{errors.email.message}</p>}
+          </div>
+
+          <div className={st.formGroup}>
+            <label>CNPJ</label>
+            <input {...register("cnpj")} placeholder="CNPJ da empresa" />
+            {errors.cnpj && <p className={st.error}>{errors.cnpj.message}</p>}
           </div>
 
           <div className={st.formGroup}>
@@ -87,10 +118,16 @@ const Register = () => {
             )}
           </div>
 
-          <p className={st.loginnavigate}>Já tem conta? <a href="/login">Acesse aqui</a></p>
+          <p className={st.loginnavigate}>
+            Já tem conta? <a href="/login">Acesse aqui</a>
+          </p>
 
-          <button type="submit" className={st.submitButton}>
-            Continuar 
+          <button
+            type="submit"
+            className={st.submitButton}
+            disabled={isLoading}
+          >
+            {isLoading ? "Registrando..." : "Continuar"}
           </button>
         </form>
       </div>
