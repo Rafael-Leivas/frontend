@@ -4,6 +4,9 @@ import OnboardingCard from "../../Components/OnboardingCard/OnboardingCard";
 import axios from "../../api/axiosConfig";
 import st from "./Onboarding.module.css";
 
+import { Modal } from 'antd';
+import CreateContent from "./CreateContent/CreateContent";
+
 const Onboarding = () => {
   const [cards, setCards] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -199,61 +202,18 @@ const Onboarding = () => {
           </div>
         )}
 
-        {/* Modal para adicionar novo card */}
-        {showModal && !selectedCard && (
-          <div className={st.modalOverlay}>
-            <div className={st.modalContent}>
-              <h2>Adicionar Novo Card</h2>
-              {error && <p className={st.error}>{error}</p>}
-              <input
-                type="text"
-                placeholder="Título"
-                value={newCard.title}
-                onChange={(e) =>
-                  setNewCard({ ...newCard, title: e.target.value })
-                }
-                disabled={isLoading}
-              />
-              <input
-                type="text"
-                placeholder="Descrição"
-                value={newCard.subtitle}
-                onChange={(e) =>
-                  setNewCard({ ...newCard, subtitle: e.target.value })
-                }
-                disabled={isLoading}
-              />
-              <textarea
-                placeholder="Corpo"
-                value={newCard.body}
-                onChange={(e) =>
-                  setNewCard({ ...newCard, body: e.target.value })
-                }
-                disabled={isLoading}
-              />
-              {/* Adicione este checkbox */}
-              <label className={st.checkboxContainer}>
-                <input
-                  type="checkbox"
-                  checked={newCard.disponivel}
-                  onChange={(e) =>
-                    setNewCard({ ...newCard, disponivel: e.target.checked })
-                  }
-                  disabled={isLoading}
-                />
-                Card disponível imediatamente
-              </label>
-              <div className={st.modalButtons}>
-                <button onClick={handleAddCard} disabled={isLoading}>
-                  {isLoading ? "Salvando..." : "Salvar"}
-                </button>
-                <button onClick={closeModal} disabled={isLoading}>
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+      <Modal
+        title="Adicionar novo card"
+        closable={{ 'aria-label': 'Custom Close Button' }}
+        open={showModal}
+        onOk={closeModal}
+        onCancel={closeModal}
+        width={800}
+        style={{ top: 30 }}
+        footer={null}
+      >
+        <CreateContent />
+      </Modal>
       </main>
     </div>
   );
