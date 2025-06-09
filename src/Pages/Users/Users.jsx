@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../Components/SideBar/Sidebar';
-import './Users.css';
+import st from './Users.module.css';
 import { 
   getAllColaboradores, 
   createColaborador 
@@ -140,20 +140,20 @@ const Users = () => {
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <Sidebar currentPage="users" name="Nome do Usuário" />
-      <main className="colaboradores-main">
+      <main className={st.colaboradores_main}>
         <h1>Colaboradores</h1>
         
         {currentUserRole === 'admin' && (
-          <div className="button-container">
-            <button className="btn-add" onClick={handleOpenModal}>
+          <div className={st.button_container}>
+            <button className={st.btn_add} onClick={handleOpenModal}>
               + Adicionar colaborador
             </button>
           </div>
         )}
 
-        <div className="content-section">
-          <div className="setores-container">
-            <h2 className="setores-title">Setores</h2>
+        <div className={st.content_section}>
+          <div className={st.setores_container}>
+            <h2 className={st.setores_title}>Setores</h2>
             {Object.keys(
               colaboradoresData.reduce((acc, colaborador) => {
                 const { setor } = colaborador;
@@ -162,22 +162,22 @@ const Users = () => {
                 return acc;
               }, {})
             ).map((setor) => (
-              <div key={setor} className="setor">
+              <div key={setor} className={st.setor}>
                 <button
-                  className="setor-btn"
+                  className={st.setor_btn}
                   onClick={() => handleSetorClick(setor)}
                 >
                   {setor}
                 </button>
                 {selectedSetor === setor && (
-                  <div className="setor-users">
+                  <div className={st.setor_users}>
                     {colaboradoresData
                       .filter((colaborador) => colaborador.setor === setor)
                       .map((user) => (
-                        <div key={user._id} className="setor-user-card">
+                        <div key={user._id} className={st.setor_user_card}>
                           {user.nome_completo}
                           {currentUserRole === 'admin' && (
-                            <span className="user-email">{user.email}</span>
+                            <span className={st.user_email}>{user.email}</span>
                           )}
                         </div>
                       ))}
@@ -186,22 +186,22 @@ const Users = () => {
               </div>
             ))}
           </div>
-          
-          <div className="colaboradores-list">
+
+          <div className={st.colaboradores_list}>
             <h3>Todos os colaboradores</h3>
-            <div className='subtitle-all-colaborators'>
-              <span className="nome">Nome</span>
-              <span className="setor">Setor</span>
+            <div className={st.subtitle_all_colaborators}>
+              <span className={st.nome}>Nome</span>
+              <span className={st.setor}>Setor</span>
               {currentUserRole === 'admin' && (
-                <span className="email">Email</span>
+                <span className={st.email}>Email</span>
               )}
             </div>
             {colaboradoresData.map((colaborador) => (
-              <div key={colaborador._id} className="colaborador-card">
-                <span className="nome">{colaborador.nome_completo}</span>
-                <span className="setor">{colaborador.setor}</span>
+              <div key={colaborador._id} className={st.colaborador_card}>
+                <span className={st.nome}>{colaborador.nome_completo}</span>
+                <span className={st.setor}>{colaborador.setor}</span>
                 {currentUserRole === 'admin' && (
-                  <span className="email">{colaborador.email}</span>
+                  <span className={st.email}>{colaborador.email}</span>
                 )}
               </div>
             ))}
@@ -211,8 +211,8 @@ const Users = () => {
 
       {/* Modal de Adição - Visível apenas para admins */}
       {isModalOpen && currentUserRole === 'admin' && (
-        <div className="modal-overlay">
-          <div className="modal">
+        <div className={st.modal_overlay}>
+          <div className={st.modal}>
             <h2>Adicionar Colaborador</h2>
             <form onSubmit={handleAddColaborador}>
               <label>
@@ -281,11 +281,11 @@ const Users = () => {
                   required
                 />
               </label>
-              <div className="modal-buttons">
-                <button type="submit" className="btn-add">
+              <div className={st.modal_buttons}>
+                <button type="submit" className={st.btn_add}>
                   Salvar
                 </button>
-                <button type="button" className="btn-cancel" onClick={handleCloseModal}>
+                <button type="button" className={st.btn_cancel} onClick={handleCloseModal}>
                   Cancelar
                 </button>
               </div>
