@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaHome, FaComments, FaSignOutAlt } from 'react-icons/fa';
+import { BiHomeSmile } from "react-icons/bi";
 import { Link } from 'react-router-dom';
 import './Sidebar.css'; // Estilos para o componente
 
@@ -9,6 +10,7 @@ const Sidebar = (props) => {
   const menuItems = [
     { name: 'Onboarding', icon: <FaHome />, page: 'onboarding', path: '/onboarding' },
     { name: 'Usuários', icon: <FaComments />, page: 'users', path: '/users' },
+    { name: 'Empresa', icon: <BiHomeSmile />, page: 'enterprise', path: '/enterprise' },
     { name: 'Sair', icon: <FaSignOutAlt />, page: 'logout', path: '/' },
   ];
 

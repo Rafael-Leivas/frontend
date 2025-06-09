@@ -5,6 +5,7 @@ import Login from "./Pages/Login/Login"
 import Onboarding from "./Pages/Onboarding/Onboarding"
 import Register from "./Pages/Register/Register"
 import Users from "./Pages/Users/Users"
+import Enterprises from "./Pages/Enterprises/Enterprises";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/enterprise" element={<Enterprises />} />
       </Routes>
     </BrowserRouter>
   );
