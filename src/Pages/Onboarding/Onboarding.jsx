@@ -4,7 +4,7 @@ import OnboardingCard from "../../Components/OnboardingCard/OnboardingCard";
 import axios from "../../api/axiosConfig";
 import st from "./Onboarding.module.css";
 
-import { Modal } from 'antd';
+import { message, Modal } from "antd";
 import CreateContent from "./CreateContent/CreateContent";
 
 const Onboarding = () => {
@@ -145,6 +145,13 @@ const Onboarding = () => {
     setShowModal(true);
   };
 
+  const handleContentCreated = () => {
+    setShowModal(false);
+    message.success("Conteúdo criado com sucesso!");
+    // Aqui você pode recarregar os cards, se quiser:
+    // fetchCards();
+  };
+
   return (
     <div style={{ display: "flex" }}>
       <Sidebar currentPage="onboarding" name="Nome do Usuário" />
@@ -202,18 +209,18 @@ const Onboarding = () => {
           </div>
         )}
 
-      <Modal
-        title="Adicionar novo card"
-        closable={{ 'aria-label': 'Custom Close Button' }}
-        open={showModal}
-        onOk={closeModal}
-        onCancel={closeModal}
-        width={800}
-        style={{ top: 30 }}
-        footer={null}
-      >
-        <CreateContent />
-      </Modal>
+        <Modal
+          title="Adicionar novo card"
+          closable={{ "aria-label": "Custom Close Button" }}
+          open={showModal}
+          onOk={closeModal}
+          onCancel={closeModal}
+          width={800}
+          style={{ top: 30 }}
+          footer={null}
+        >
+          <CreateContent onSuccess={handleContentCreated} />
+        </Modal>
       </main>
     </div>
   );
