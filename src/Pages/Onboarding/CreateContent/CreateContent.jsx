@@ -1,25 +1,52 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Checkbox, Modal } from 'antd';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { useState } from "react";
+import { Form, Input, Button } from "antd";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { useAuthContext } from "../../../contexts/AuthContext";
+import axios from "axios";
+import { message } from "antd";
 
-const CreateContent = () => {
+const baseUrl = import.meta.env.VITE_API_URL;
+
+const CreateContent = ({ onSuccess }) => {
   const [form] = Form.useForm();
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const auth = useAuthContext();
 
   const handleSubmit = async () => {
     try {
       setLoading(true);
       const values = await form.validateFields();
-      console.log({
-        ...values,
-        content
+
+      const body = {
+        titulo: values.title,
+        tipo: "Card",
+        setor: values.sector,
+        corpo: content,
+        disponivel: false,
+        id_administrador: auth?.user?.id,
+      };
+
+      const token = localStorage.getItem("token");
+
+      await axios.post(`${baseUrl}/conteudo`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
+      form.resetFields();
+      setContent("");
+      setError(null);
+
+      if (onSuccess) onSuccess();
     } catch (err) {
-      setError('Erro ao validar os campos');
+      setError("Erro ao criar conteúdo");
       console.error(err);
+      message.error("Erro ao criar conteúdo: " + (err.response?.data?.message || err.message));
     } finally {
       setLoading(false);
     }
@@ -27,33 +54,29 @@ const CreateContent = () => {
 
   const modules = {
     toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],
-      ['blockquote', 'code-block'],
-      [{ 'header': 1 }, { 'header': 2 }],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'script': 'sub' }, { 'script': 'super' }],
-      [{ 'indent': '-1' }, { 'indent': '+1' }],
-      [{ 'direction': 'rtl' }],
-      [{ 'size': ['small', false, 'large', 'huge'] }],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'font': [] }],
-      [{ 'align': [] }],
+      ["bold", "italic", "underline", "strike"],
+      ["blockquote", "code-block"],
+      [{ header: 1 }, { header: 2 }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ script: "sub" }, { script: "super" }],
+      [{ indent: "-1" }, { indent: "+1" }],
+      [{ direction: "rtl" }],
+      [{ size: ["small", false, "large", "huge"] }],
+      [{ color: [] }, { background: [] }],
+      [{ font: [] }],
+      [{ align: [] }],
     ],
   };
 
   return (
     <div>
-      
-      {error && <div style={{ color: 'red', marginBottom: 16 }}>{error}</div>}
+      {error && <div style={{ color: "red", marginBottom: 16 }}>{error}</div>}
 
-      <Form
-        form={form}
-        layout="vertical"
-      >
+      <Form form={form} layout="vertical">
         <Form.Item
           label="Título"
           name="title"
-          rules={[{ required: true, message: 'Por favor insira o título' }]}
+          rules={[{ required: true, message: "Por favor insira o título" }]}
         >
           <Input placeholder="Digite o título do card" />
         </Form.Item>
@@ -61,15 +84,20 @@ const CreateContent = () => {
         <Form.Item
           label="Descrição"
           name="description"
-          rules={[{ required: true, message: 'Por favor insira a descrição' }]}
+          rules={[{ required: true, message: "Por favor insira a descrição" }]}
         >
           <Input placeholder="Digite a descrição do card" />
         </Form.Item>
 
         <Form.Item
-          label="Corpo"
-          required
+          label="Setor"
+          name="sector"
+          rules={[{ required: true, message: "Por favor selecione o setor" }]}
         >
+          <Input placeholder="Digite o setor que faz parte" />
+        </Form.Item>
+
+        <Form.Item label="Corpo" required>
           <ReactQuill
             theme="snow"
             value={content}
@@ -79,22 +107,16 @@ const CreateContent = () => {
           />
         </Form.Item>
 
-        <Form.Item name="available" valuePropName="checked">
-          <Checkbox>Card disponível imediatamente</Checkbox>
-        </Form.Item>
-
         <Form.Item>
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             onClick={handleSubmit}
             loading={loading}
             style={{ marginRight: 16 }}
           >
             Salvar
           </Button>
-          <Button onClick={() => form.resetFields()}>
-            Cancelar
-          </Button>
+          <Button onClick={() => form.resetFields()}>Cancelar</Button>
         </Form.Item>
       </Form>
     </div>
