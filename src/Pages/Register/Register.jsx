@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import InputMask from "react-input-mask";
 import axios from "../../api/axiosConfig";
 import { setToken, setUserRole } from "../../api/auth";
 import st from "./Register.module.css";
@@ -11,7 +12,14 @@ import image from "../../Assets/peoplesregister.svg";
 const schema = yup.object({
   name: yup.string().required("Nome é obrigatório"),
   email: yup.string().email("E-mail inválido").required("E-mail é obrigatório"),
-  cnpj: yup.string().required("CNPJ é obrigatório"), // Novo campo
+  cnpj: yup
+    .string()
+    .required("CNPJ é obrigatório")
+    .test("cnpj-format", "CNPJ deve ter 14 dígitos", (value) => {
+      if (!value) return false;
+      const cnpjNumbers = value.replace(/[^\d]/g, "");
+      return cnpjNumbers.length === 14;
+    }),
   password: yup
     .string()
     .min(6, "A senha deve ter pelo menos 6 caracteres")
@@ -31,6 +39,8 @@ const Register = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -40,19 +50,18 @@ const Register = () => {
     setRegisterError(null);
 
     try {
-      // Alterado para o novo endpoint de registro de empresa
+      // Remove a máscara do CNPJ antes de enviar
+      const cnpjNumbers = data.cnpj.replace(/[^\d]/g, "");
+      
       const response = await axios.post("/empresa/register", {
         nome: data.name,
         email: data.email,
         senha: data.password,
-        cnpj: data.cnpj,
+        cnpj: cnpjNumbers,
       });
 
-      // Armazena token e role
       setToken(response.data.data.token);
       setUserRole("empresa");
-
-      // Redireciona para a dashboard
       navigate("/onboarding");
     } catch (error) {
       setRegisterError(
@@ -71,7 +80,7 @@ const Register = () => {
       </div>
 
       <div className={st.rightSide}>
-        <form onSubmit={handleSubmit(onSubmit)} className={st.form}>
+        <form onSubmit={handleSubmit(onSubmit)} czlassName={st.form}>
           <h2>Cadastre-se</h2>
 
           {registerError && <p className={st.error}>{registerError}</p>}
@@ -90,7 +99,18 @@ const Register = () => {
 
           <div className={st.formGroup}>
             <label>CNPJ</label>
-            <input {...register("cnpj")} placeholder="CNPJ da empresa" />
+            <InputMask
+              mask="99.999.999/9999-99"
+              {...register("cnpj")}
+              placeholder="00.000.000/0000-00"
+            >
+              {(inputProps) => (
+                <input
+                  {...inputProps}
+                  type="text"
+                />
+              )}
+            </InputMask>
             {errors.cnpj && <p className={st.error}>{errors.cnpj.message}</p>}
           </div>
 
