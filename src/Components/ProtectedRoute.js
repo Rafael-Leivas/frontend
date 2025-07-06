@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { isAuthenticated } from '../../api/auth'; // Ajuste o caminho conforme sua estrutura
+import { isAuthenticated } from '../api/auth';
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();

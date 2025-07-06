@@ -1,17 +1,40 @@
-import React from 'react';
-import { FaHome, FaComments, FaSignOutAlt } from 'react-icons/fa';
+import React from "react";
+import { FaHome, FaComments, FaSignOutAlt } from "react-icons/fa";
 import { BiHomeSmile } from "react-icons/bi";
-import { Link } from 'react-router-dom';
-import './Sidebar.css'; // Estilos para o componente
+import { Link, useNavigate } from "react-router-dom";
+import "./Sidebar.css";
 
-import logo from '../../Assets/Logo-Sidebar.svg';
+import logo from "../../Assets/Logo-Sidebar.svg";
+import { useAuth } from "../../hooks/useAuth";
 
 const Sidebar = (props) => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   const menuItems = [
-    { name: 'Onboarding', icon: <FaHome />, page: 'onboarding', path: '/onboarding' },
-    { name: 'Usuários', icon: <FaComments />, page: 'users', path: '/users' },
-    { name: 'Empresa', icon: <BiHomeSmile />, page: 'enterprise', path: '/enterprise' },
-    { name: 'Sair', icon: <FaSignOutAlt />, page: 'logout', path: '/' },
+    {
+      name: "Onboarding",
+      icon: <FaHome />,
+      page: "onboarding",
+      path: "/onboarding",
+    },
+    {
+      name: "Usuários",
+      icon: <FaComments />,
+      page: "users",
+      path: "/users",
+    },
+    {
+      name: "Empresa",
+      icon: <BiHomeSmile />,
+      page: "enterprise",
+      path: "/enterprise",
+    },
   ];
 
   return (
@@ -29,7 +52,7 @@ const Sidebar = (props) => {
         {menuItems.map((item) => (
           <li
             key={item.name}
-            className={props.currentPage === item.page ? 'active' : ''}
+            className={props.currentPage === item.page ? "active" : ""}
           >
             <Link to={item.path} className="menu-link">
               <div className="menu-item">
@@ -39,6 +62,13 @@ const Sidebar = (props) => {
             </Link>
           </li>
         ))}
+
+        <li>
+          <button className="menu-link" onClick={handleLogout}>
+            <FaSignOutAlt />
+            <span>Sair</span>
+          </button>
+        </li>
       </ul>
     </div>
   );

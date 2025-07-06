@@ -1,41 +1,53 @@
 import { useState, useEffect } from 'react';
-import { login as apiLogin, logout as apiLogout, checkAuth } from '../api/services/authService';
+import { login as apiLogin, logout as apiLogout } from '../api/services/authService';
 
 export const useAuth = () => {
   const [user, setUser] = useState(() => {
+  try {
     const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+    if (!savedUser || savedUser === "undefined") return null;
+    return JSON.parse(savedUser);
+  } catch {
+    return null;
+  }
+});
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token && !user) {
-      setLoading(true);
-      checkAuth()
-        .then((data) => {
-          setUser(data.empresa);
-          localStorage.setItem("user", JSON.stringify(data.empresa));
-        })
-        .catch(() => {
-          setUser(null);
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-        })
-        .finally(() => setLoading(false));
+useEffect(() => {
+  // Removida a verificação checkAuth() - agora apenas mantém os dados salvos no localStorage
+  const token = localStorage.getItem("token");
+  const savedUser = localStorage.getItem("user");
+  const savedRole = localStorage.getItem("userRole");
+  
+  if (token && savedUser && savedRole && !user) {
+    try {
+      const userData = JSON.parse(savedUser);
+      setUser(userData);
+    } catch {
+      // Se houver erro ao parsear, limpa os dados
+      logout();
     }
-  }, []);
+  }
+}, [user]);
+
 
   const login = async (credentials) => {
     setLoading(true);
     try {
       const data = await apiLogin(credentials);
-      const empresa = data.data?.empresa;
+      const tipoUsuario = data.data?.tipoUsuario;
       const token = data.data?.token;
-      setUser(empresa);
-      localStorage.setItem("user", JSON.stringify(empresa));
+      
+      // Trata tanto empresa quanto colaborador
+      const userData = tipoUsuario === 'empresa' ? data.data?.empresa : data.data?.colaborador;
+
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", token);
+      localStorage.setItem("userRole", tipoUsuario);
+
       setError(null);
       return data;
     } catch (err) {
@@ -51,6 +63,7 @@ export const useAuth = () => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    localStorage.removeItem("userRole");
   };
 
   return { user, loading, error, login, logout };
