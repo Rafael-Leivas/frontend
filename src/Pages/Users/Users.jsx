@@ -11,6 +11,7 @@ import {
   Table,
   Tag,
   Space,
+  AutoComplete,
 } from "antd";
 import { PlusOutlined, EyeOutlined, UserAddOutlined } from "@ant-design/icons";
 import Sidebar from "../../Components/SideBar/Sidebar";
@@ -135,7 +136,7 @@ const Users = () => {
       const colaboradorData = {
         nome_completo: values.nome_completo,
         email: values.email,
-        setor: values.setor,
+        setor: Array.isArray(values.setor) ? values.setor[0] : values.setor,
         cargo: values.cargo || "",
         data_nascimento: values.data_nascimento.format("YYYY-MM-DD"),
         senha: values.senha,
@@ -358,19 +359,16 @@ const Users = () => {
           <Form.Item
             label="Setor"
             name="setor"
-            rules={[{ required: true, message: "Por favor selecione o setor" }]}
+            rules={[{ required: true, message: "Por favor digite o setor" }]}
           >
-            <Select
-              placeholder="Selecione ou digite um setor"
-              mode="tags"
-              maxTagCount={1}
-            >
-              {setoresUnicos.map((setor) => (
-                <Option key={setor} value={setor}>
-                  {setor}
-                </Option>
-              ))}
-            </Select>
+            <AutoComplete
+              placeholder="Digite o setor"
+              options={setoresUnicos.map((setor) => ({ value: setor }))}
+              filterOption={(inputValue, option) =>
+                option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+              }
+              allowClear
+            />
           </Form.Item>
 
           <Form.Item label="Cargo" name="cargo">

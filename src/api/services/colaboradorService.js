@@ -9,6 +9,15 @@ export const createColaborador = async (colaboradorData) => {
   }
 };
 
+export const createAdmin = async (adminData) => {
+  try {
+    const response = await api.post('/admin', adminData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Erro ao criar administrador' };
+  }
+};
+
 export const getColaboradorById = async (id) => {
   try {
     const response = await api.get(`/colaborador/id/${id}`);

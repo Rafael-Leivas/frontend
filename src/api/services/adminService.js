@@ -2,7 +2,7 @@ import api from '../axiosConfig';
 
 export const createAdmin = async (adminData) => {
   try {
-    const response = await api.post('/administrador', adminData);
+    const response = await api.post('/admin', adminData);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'Erro ao criar administrador' };
@@ -20,7 +20,7 @@ export const getAdminById = async (id) => {
 
 export const getAllAdmins = async () => {
   try {
-    const response = await api.get('/administrador/all');
+    const response = await api.get('/admin/all');
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'Erro ao listar administradores' };

@@ -64,7 +64,7 @@ const Sidebar = (props) => {
         ))}
 
         <li>
-          <button className="menu-link" onClick={handleLogout}>
+          <button className="logout-button" onClick={handleLogout}>
             <FaSignOutAlt />
             <span>Sair</span>
           </button>
