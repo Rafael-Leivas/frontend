@@ -42,9 +42,13 @@ useEffect(() => {
       
       // Trata tanto empresa quanto colaborador
       const userData = tipoUsuario === 'empresa' ? data.data?.empresa : data.data?.colaborador;
+      
+      // Salva também o ID do usuário separadamente para facilitar acesso
+      const userId = userData?.id;
 
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("userId", userId);
       localStorage.setItem("token", token);
       localStorage.setItem("userRole", tipoUsuario);
 
@@ -62,9 +66,14 @@ useEffect(() => {
     apiLogout();
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("userId");
     localStorage.removeItem("token");
     localStorage.removeItem("userRole");
   };
 
-  return { user, loading, error, login, logout };
+  const getUserId = () => {
+    return localStorage.getItem("userId") || user?.id;
+  };
+
+  return { user, loading, error, login, logout, getUserId };
 };
