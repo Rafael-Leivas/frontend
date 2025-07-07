@@ -11,6 +11,7 @@ export const getToken = () => {
 export const removeToken = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
+  localStorage.removeItem('userId');
   localStorage.removeItem('userRole');
 };
 
@@ -25,6 +26,8 @@ export const getUserRole = () => {
 export const removeAuthData = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('userRole');
+  localStorage.removeItem('userId');
+  localStorage.removeItem('user');
 };
 
 export const isAuthenticated = () => {
@@ -34,4 +37,18 @@ export const isAuthenticated = () => {
 export const hasRole = (requiredRole) => {
   const role = getUserRole();
   return role === requiredRole;
+};
+
+export const getUserId = () => {
+  return localStorage.getItem('userId');
+};
+
+export const getUser = () => {
+  try {
+    const savedUser = localStorage.getItem('user');
+    if (!savedUser || savedUser === 'undefined') return null;
+    return JSON.parse(savedUser);
+  } catch {
+    return null;
+  }
 };
