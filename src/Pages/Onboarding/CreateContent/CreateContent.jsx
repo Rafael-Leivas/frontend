@@ -26,7 +26,7 @@ const CreateContent = ({ onSuccess }) => {
         tipo: "Card",
         setor: values.sector,
         corpo: content,
-        disponivel: false,
+        disponivel: true,
         id_administrador: auth?.user?.id,
       };
 
