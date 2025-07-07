@@ -53,3 +53,12 @@ export const getConteudosByAdmin = async (adminId) => {
     throw error.response?.data || { message: 'Erro ao buscar conteúdos por administrador' };
   }
 };
+
+export const getContentByColaborador = async (colaboradorId) => {
+  try {
+    const response = await api.get(`/conteudo/colaborador/${colaboradorId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Erro ao buscar conteúdos por colaborador' };
+  }
+}
