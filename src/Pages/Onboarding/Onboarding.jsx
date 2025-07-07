@@ -6,10 +6,12 @@ import st from "./Onboarding.module.css";
 
 import { message, Modal } from "antd";
 import CreateContent from "./CreateContent/CreateContent";
+import { getUserId } from "../../api/auth";
 
 const Onboarding = () => {
   const [cards, setCards] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [newCard, setNewCard] = useState({
     title: "",
     subtitle: "",
@@ -20,14 +22,20 @@ const Onboarding = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const userId = getUserId();
+
   // Fetch inicial dos cards
   useEffect(() => {
     const fetchCards = async () => {
+      if (!userId) return;
+
       setIsLoading(true);
       try {
-        const response = await axios.get("/conteudo/all");
-        // No seu useEffect ou onde você faz o fetch dos cards
-        const fetchedCards = response.data.data.map((card, index) => ({
+        const response = await axios.get(`/conteudo/colaborador/${userId}`);
+        // Acessa os conteúdos dentro da estrutura response.data.data.conteudos
+        const conteudos = response.data.data?.conteudos || [];
+
+        const fetchedCards = conteudos.map((card, index) => ({
           number: index + 1, // Isso criará a sequência 1, 2, 3...
           id: card._id.toString(), // Mantemos o ID original em outro campo caso precise
           title: card.titulo,
@@ -47,17 +55,26 @@ const Onboarding = () => {
     };
 
     fetchCards();
-  }, []);
+  }, [userId]);
 
-  const openModal = () => {
-    setShowModal(true);
+  const openCreateModal = () => {
+    setShowCreateModal(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
+  const closeCreateModal = () => {
+    setShowCreateModal(false);
     setNewCard({ title: "", subtitle: "", body: "", disponivel: false });
-    setSelectedCard(null);
     setError(null);
+  };
+
+  const openViewModal = (card) => {
+    setSelectedCard(card);
+    setShowViewModal(true);
+  };
+
+  const closeViewModal = () => {
+    setShowViewModal(false);
+    setSelectedCard(null);
   };
 
   const handleAddCard = async () => {
@@ -87,7 +104,7 @@ const Onboarding = () => {
         },
       ]);
 
-      closeModal();
+      closeCreateModal();
     } catch (error) {
       setError(error.response?.data?.message || "Erro ao salvar o card");
       console.error("Erro ao enviar os dados para o backend:", error);
@@ -131,7 +148,7 @@ const Onboarding = () => {
         return updatedCards;
       });
 
-      closeModal();
+      closeViewModal();
     } catch (error) {
       setError(error.response?.data?.message || "Erro ao atualizar o card");
       console.error("Erro ao enviar a atualização:", error);
@@ -141,12 +158,11 @@ const Onboarding = () => {
   };
 
   const handleViewMore = (card) => {
-    setSelectedCard(card);
-    setShowModal(true);
+    openViewModal(card);
   };
 
   const handleContentCreated = () => {
-    setShowModal(false);
+    closeCreateModal();
     message.success("Conteúdo criado com sucesso!");
     // Aqui você pode recarregar os cards, se quiser:
     // fetchCards();
@@ -159,7 +175,7 @@ const Onboarding = () => {
         <h1>Onboarding</h1>
         <button
           className={st.addButton}
-          onClick={openModal}
+          onClick={openCreateModal}
           disabled={isLoading}
         >
           {isLoading ? "Carregando..." : "+ Adicionar Novo Card"}
@@ -181,27 +197,25 @@ const Onboarding = () => {
         </div>
 
         {/* Modal para visualização de card */}
-        {showModal && selectedCard && (
+        {showViewModal && selectedCard && (
           <div className={st.modalOverlay}>
             <div className={st.modalContent}>
               <h2>{selectedCard.title}</h2>
               <h3>{selectedCard.subtitle}</h3>
-              <p>
-                {selectedCard.content.split("\n").map((line, index) => (
-                  <React.Fragment key={index}>
-                    {line}
-                    {index < selectedCard.content.split("\n").length - 1 && (
-                      <br />
-                    )}
-                  </React.Fragment>
-                ))}
-              </p>
+              <div
+                dangerouslySetInnerHTML={{ __html: selectedCard.content }}
+                style={{
+                  lineHeight: "1.6",
+                  fontSize: "14px",
+                  color: "#333",
+                }}
+              />
 
               <div className={st.modalButtons}>
-                <button onClick={handleMarkAsCompleted} disabled={isLoading}>
+                {/* <button onClick={handleMarkAsCompleted} disabled={isLoading}>
                   {isLoading ? "Processando..." : "Marcar como Concluído"}
-                </button>
-                <button onClick={closeModal} disabled={isLoading}>
+                </button> */}
+                <button onClick={closeViewModal} disabled={isLoading}>
                   Fechar
                 </button>
               </div>
@@ -209,12 +223,13 @@ const Onboarding = () => {
           </div>
         )}
 
+        {/* Modal para criar novo card */}
         <Modal
           title="Adicionar novo card"
           closable={{ "aria-label": "Custom Close Button" }}
-          open={showModal}
-          onOk={closeModal}
-          onCancel={closeModal}
+          open={showCreateModal}
+          onOk={closeCreateModal}
+          onCancel={closeCreateModal}
           width={800}
           style={{ top: 30 }}
           footer={null}
