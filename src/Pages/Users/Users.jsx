@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -12,8 +12,9 @@ import {
   Tag,
   Space,
   AutoComplete,
+  Popconfirm,
 } from "antd";
-import { PlusOutlined, EyeOutlined, UserAddOutlined } from "@ant-design/icons";
+import { PlusOutlined, EyeOutlined, UserAddOutlined, SearchOutlined, DeleteOutlined } from "@ant-design/icons";
 import Sidebar from "../../Components/SideBar/Sidebar";
 import st from "./Users.module.css";
 import {
@@ -24,6 +25,7 @@ import { getAllAdmins, createAdmin } from "../../api/services/adminService";
 import { getAllConteudos } from "../../api/services/conteudoService";
 import { isAuthenticated, getUserRole } from "../../api/auth";
 import { useAuthContext } from "../../contexts/AuthContext";
+import axios from "../../api/axiosConfig";
 
 const { Option } = Select;
 
@@ -47,11 +49,14 @@ const Users = () => {
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submittingAdmin, setSubmittingAdmin] = useState(false);
+  const [deletingContent, setDeletingContent] = useState(false);
+  const [deletingColaborador, setDeletingColaborador] = useState(false);
 
   // Estados para dados do formulário
   const [administradores, setAdministradores] = useState([]);
   const [conteudos, setConteudos] = useState([]);
   const [selectedConteudos, setSelectedConteudos] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     // Verifica autenticação
@@ -86,6 +91,54 @@ const Users = () => {
       message.error("Erro ao carregar dados");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Função para deletar conteúdo
+  const handleDeleteContent = async (contentId) => {
+    setDeletingContent(true);
+    try {
+      await axios.delete(`/conteudo/${contentId}`);
+      
+      // Atualizar a lista de conteúdos removendo o item deletado
+      setConteudos(prevConteudos => 
+        prevConteudos.filter(content => content._id !== contentId)
+      );
+      
+      // Remover das seleções se estiver selecionado
+      setSelectedConteudos(prevSelected => 
+        prevSelected.filter(id => id !== contentId)
+      );
+
+      message.success("Conteúdo excluído com sucesso!");
+    } catch (error) {
+      console.error("Erro ao excluir conteúdo:", error);
+      message.error(
+        error.response?.data?.message || "Erro ao excluir conteúdo"
+      );
+    } finally {
+      setDeletingContent(false);
+    }
+  };
+
+  const handleDeleteColaborador = async (colaboradorId) => {
+    setDeletingColaborador(true);
+    try {
+      await axios.delete(`/colaborador/${colaboradorId}`);
+      
+      // Atualizar a lista de colaboradores removendo o item deletado
+      setColaboradoresData(prevColaboradores => 
+        prevColaboradores.filter(colaborador => colaborador._id !== colaboradorId)
+      );
+
+      message.success("Colaborador excluído com sucesso!");
+    } catch (error) {
+      console.error("Erro ao excluir colaborador:", error);
+      message.error(
+        error.response?.data?.message || "Erro ao excluir colaborador"
+      );
+    } finally {
+      setDeletingColaborador(false);
     }
   };
 
@@ -218,6 +271,30 @@ const Users = () => {
         </Tag>
       ),
     },
+    {
+      title: "Ações",
+      key: "actions",
+      width: 100,
+      render: (_, record) => (
+        <Popconfirm
+          title="Excluir conteúdo"
+          description="Tem certeza que deseja excluir este conteúdo? Esta ação não pode ser desfeita."
+          onConfirm={() => handleDeleteContent(record._id)}
+          okText="Sim, excluir"
+          cancelText="Cancelar"
+          okType="danger"
+        >
+          <Button
+            type="text"
+            danger
+            icon={<DeleteOutlined />}
+            loading={deletingContent}
+            size="small"
+            title="Excluir conteúdo"
+          />
+        </Popconfirm>
+      ),
+    },
   ];
 
   const setoresUnicos = [
@@ -227,6 +304,20 @@ const Users = () => {
   if (loading) return <div>Carregando...</div>;
   if (error) return <div>Erro: {error}</div>;
 
+  const userRole = getUserRole();
+
+  // Função para filtrar conteúdos
+  const filteredConteudos = conteudos.filter((content) => {
+    const searchLower = searchText.toLowerCase();
+    return (
+      content.titulo?.toLowerCase().includes(searchLower) ||
+      content.tipo?.toLowerCase().includes(searchLower) ||
+      content.setor?.toLowerCase().includes(searchLower) ||
+      (content.disponivel ? "sim" : "não").includes(searchLower) ||
+      (content.disponivel ? "disponível" : "indisponível").includes(searchLower)
+    );
+  });
+
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       <Sidebar currentPage="users" name={auth?.user?.nome || "Usuário"} />
@@ -235,6 +326,7 @@ const Users = () => {
         <h1>Colaboradores</h1>
 
         <div className={st.button_container}>
+            {userRole !== "colaborador" && (
           <Space>
             <Button
               type="primary"
@@ -251,7 +343,6 @@ const Users = () => {
             </Button>
 
             {/* Botão para cadastrar administrador - só aparece se for empresa */}
-            {/* {isEmpresa && ( */}
             <Button
               type="primary"
               icon={<UserAddOutlined />}
@@ -265,8 +356,8 @@ const Users = () => {
             >
               Cadastrar Administrador
             </Button>
-            {/* )} */}
           </Space>
+            )}
         </div>
 
         <div className={st.content_section}>
@@ -286,10 +377,38 @@ const Users = () => {
                       .filter((colaborador) => colaborador.setor === setor)
                       .map((user) => (
                         <div key={user._id} className={st.setor_user_card}>
-                          {user.nome_completo}
-                          {currentUserRole === "admin" && (
-                            <span className={st.user_email}>{user.email}</span>
-                          )}
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                            <div>
+                              {user.nome_completo}
+                              {currentUserRole === "admin" && (
+                                <span className={st.user_email}>{user.email}</span>
+                              )}
+                            </div>
+                            {userRole !== "colaborador" && (
+                              <Popconfirm
+                                title="Excluir colaborador"
+                                description="Tem certeza que deseja excluir este colaborador? Esta ação não pode ser desfeita."
+                                onConfirm={() => handleDeleteColaborador(user._id)}
+                                okText="Sim, excluir"
+                                cancelText="Cancelar"
+                                okType="danger"
+                              >
+                                <Button
+                                  type="text"
+                                  danger
+                                  icon={<DeleteOutlined />}
+                                  loading={deletingColaborador}
+                                  size="small"
+                                  title="Excluir colaborador"
+                                  style={{ 
+                                    border: 'none',
+                                    boxShadow: 'none',
+                                    padding: '4px'
+                                  }}
+                                />
+                              </Popconfirm>
+                            )}
+                          </div>
                         </div>
                       ))}
                   </div>
@@ -306,6 +425,9 @@ const Users = () => {
               {currentUserRole === "admin" && (
                 <span className={st.email}>Email</span>
               )}
+              {userRole !== "colaborador" && (
+                <span className={st.acoes}>Ações</span>
+              )}
             </div>
             {colaboradoresData.map((colaborador) => (
               <div key={colaborador._id} className={st.colaborador_card}>
@@ -313,6 +435,32 @@ const Users = () => {
                 <span className={st.setor}>{colaborador.setor}</span>
                 {currentUserRole === "admin" && (
                   <span className={st.email}>{colaborador.email}</span>
+                )}
+                {userRole !== "colaborador" && (
+                  <span className={st.acoes}>
+                    <Popconfirm
+                      title="Excluir colaborador"
+                      description="Tem certeza que deseja excluir este colaborador? Esta ação não pode ser desfeita."
+                      onConfirm={() => handleDeleteColaborador(colaborador._id)}
+                      okText="Sim, excluir"
+                      cancelText="Cancelar"
+                      okType="danger"
+                    >
+                      <Button
+                        type="text"
+                        danger
+                        icon={<DeleteOutlined />}
+                        loading={deletingColaborador}
+                        size="small"
+                        title="Excluir colaborador"
+                        style={{ 
+                          border: 'none',
+                          boxShadow: 'none',
+                          padding: '4px'
+                        }}
+                      />
+                    </Popconfirm>
+                  </span>
                 )}
               </div>
             ))}
@@ -534,6 +682,18 @@ const Users = () => {
           </Button>,
         ]}
       >
+        {/* Campo de busca */}
+        <div style={{ marginBottom: 16 }}>
+          <Input
+            placeholder="Buscar por título, tipo, setor ou disponibilidade..."
+            prefix={<SearchOutlined />}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            allowClear
+            style={{ width: "100%" }}
+          />
+        </div>
+
         <Table
           rowSelection={{
             type: "checkbox",
@@ -543,13 +703,29 @@ const Users = () => {
             },
           }}
           columns={contentColumns}
-          dataSource={conteudos.map((content) => ({
+          dataSource={filteredConteudos.map((content) => ({
             ...content,
             key: content._id,
           }))}
-          pagination={{ pageSize: 5 }}
+          pagination={{ 
+            pageSize: 5,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) => 
+              `${range[0]}-${range[1]} de ${total} conteúdos`
+          }}
           size="small"
         />
+        
+        {/* Contador de resultados */}
+        <div style={{ marginTop: 8, color: "#666", fontSize: "12px" }}>
+          {searchText && (
+            <>
+              Mostrando {filteredConteudos.length} de {conteudos.length} conteúdos
+              {filteredConteudos.length === 0 && " - Nenhum resultado encontrado"}
+            </>
+          )}
+        </div>
       </Modal>
     </div>
   );
