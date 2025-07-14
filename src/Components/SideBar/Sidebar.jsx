@@ -29,12 +29,12 @@ const Sidebar = (props) => {
       page: "users",
       path: "/users",
     },
-    {
-      name: "Empresa",
-      icon: <BiHomeSmile />,
-      page: "enterprise",
-      path: "/enterprise",
-    },
+    // {
+    //   name: "Empresa",
+    //   icon: <BiHomeSmile />,
+    //   page: "enterprise",
+    //   path: "/enterprise",
+    // },
   ];
 
   return (
